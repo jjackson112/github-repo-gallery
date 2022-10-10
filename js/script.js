@@ -105,7 +105,7 @@ filterInput.addEventListener("click", function(e) {
 
     for (const repo of repos) {
         const repoText = repo.innerText.toLowercase();
-        if (repoText.includes(searchInput) {
+        if (repoText.includes(searchInput)) {
             repo.classList.remove("hide");
         } else {
             repo.classList.add("hide");
