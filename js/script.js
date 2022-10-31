@@ -2,7 +2,7 @@ const profileInfo = document.querySelector(".overview");
 const username = "jjackson112";
 const repoList = document.querySelector(".repo-list");
 const appearRepo = document.querySelector(".repos");
-const appearRepoData = document.querySelector("repo-data");
+const appearRepoData = document.querySelector(".repo-data");
 
 const backRepoButton = document.querySelector(".view-repos");
 const filterInput = document.querySelector(".filter-repos");
@@ -20,27 +20,28 @@ const displayData = function (data) {
     div.classList.add("user-info");
     div.innerHTML = `
     <figure>
-      <img alt="user avatar" src=${data.username} />
+      <img alt="user avatar" src=${data.avatar_url} />
     </figure>
     <div>
       <p><strong>Name:</strong> ${data.name}</p>
       <p><strong>Bio:</strong> ${data.bio}</p>
       <p><strong>Location:</strong> ${data.location}</p>
-      <p><strong>Number of public repos:</strong> ${data.repos}</p>
-    </div>`
+      <p><strong>Number of public repos:</strong> ${data.public_repos}</p>
+    </div>
+    `;
 
     profileInfo.append(div);
     getRepos();
 };
 
-const getRepos = async function () {
+const getRepos = async function (username) {
     const fetchRepos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
     const repoData = await fetchRepos.json();
     showRepo(repoData);
 };
 
 const showRepo = function (repos) {
-
+    filterInput.classList.remove("hide");
     for (const repo of repos) {
         const repoItem = document.createElement("li");
         repoItem.classList.add("repo");
@@ -59,7 +60,6 @@ repoList.addEventListener("click", function(e) {
 const specificRepoInfo = async function (repoName) {
     const fetchInfo = await fetch(`https://api.github.com/users/repo/${username}/${repoName}`);
     const repoInfo = await fetchInfo.json();
-    console.log(repoInfo);
 
     // Grab languages
     const fetchLanguages = await fetch(repoInfo.language_url);
@@ -75,32 +75,34 @@ const specificRepoInfo = async function (repoName) {
 };
 
 const displaySpecificRepoInfo = function (repoInfo, languages) {
-    repoData.innerHTML = "";
-    repoData.classList.remove("hide");
-    allReposContainer.classList.add("hide");
+    backRepoButton.classList.remove("hide");
+    appearRepoData.innerHTML = "";
+    appearRepoData.classList.remove("hide");
+    appearRepo.classList.add("hide");
 
     const div = document.createElement("div");
 
-    div.innerHTML = `<h3>Name: ${repoInfo.name}</h3>
+    div.innerHTML = `
+    <h3>Name: ${repoInfo.name}</h3>
     <p>Description: ${repoInfo.description}</p>
     <p>Default Branch: ${repoInfo.default_branch}</p>
     <p>Languages: ${languages.join(", ")}</p>
     <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
     `;
-    repoData.append(div);
+    appearRepoData.append(div);
 };
 
 backRepoButton.addEventListener("click", function () {
-    allReposContainer.classList.remove("hide");
-    repoData.classList.add("hide");
+    appearRepo.classList.remove("hide");
+    appearRepoData.classList.add("hide");
     backRepoButton.classList.add("hide");
 });
 
-// Search
+// Dynamic Search
 
-filterInput.addEventListener("click", function(e) {
+filterInput.addEventListener("input", function(e) {
     const search = e.target.value;
-    const repos = document.querySelectorAll("repo");
+    const repos = document.querySelectorAll(".repo");
     const searchInput = search.toLowercase();
 
     for (const repo of repos) {
