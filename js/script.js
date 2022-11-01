@@ -58,7 +58,7 @@ repoList.addEventListener("click", function(e) {
 });
 
 const specificRepoInfo = async function (repoName) {
-    const fetchInfo = await fetch(`https://api.github.com/users/repo/${username}/${repoName}`);
+    const fetchInfo = await fetch(`https://api.github.com//repos/${username}/${repoName}`);
     const repoInfo = await fetchInfo.json();
 
     // Grab languages
@@ -76,8 +76,8 @@ const specificRepoInfo = async function (repoName) {
 
 const displaySpecificRepoInfo = function (repoInfo, languages) {
     backRepoButton.classList.remove("hide");
-    appearRepoData.innerHTML = "";
-    appearRepoData.classList.remove("hide");
+    repoData.innerHTML = "";
+    repoData.classList.remove("hide");
     appearRepo.classList.add("hide");
 
     const div = document.createElement("div");
@@ -89,12 +89,12 @@ const displaySpecificRepoInfo = function (repoInfo, languages) {
     <p>Languages: ${languages.join(", ")}</p>
     <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
     `;
-    appearRepoData.append(div);
+    repoData.append(div);
 };
 
 backRepoButton.addEventListener("click", function () {
     appearRepo.classList.remove("hide");
-    appearRepoData.classList.add("hide");
+    repoData.classList.add("hide");
     backRepoButton.classList.add("hide");
 });
 
