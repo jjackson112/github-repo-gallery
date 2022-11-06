@@ -8,8 +8,8 @@ const backRepoButton = document.querySelector(".view-repos");
 const filterInput = document.querySelector(".filter-repos");
 
 const getData = async function () {
-    const response = await fetch(`https://api.github.com/users/${username}`);
-    const data = await response.json();
+    const userInfo = await fetch(`https://api.github.com/users/${username}`);
+    const data = await userInfo.json();
     displayData(data);
 };
 
@@ -31,16 +31,16 @@ const displayData = function (data) {
     `;
 
     profileInfo.append(div);
-    getRepos();
+    getRepos(username);
 };
 
 const getRepos = async function (username) {
     const fetchRepos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
     const repoData = await fetchRepos.json();
-    showRepo(repoData);
+    showRepos(repoData);
 };
 
-const showRepo = function (repos) {
+const showRepos = function (repos) {
     filterInput.classList.remove("hide");
     for (const repo of repos) {
         const repoItem = document.createElement("li");
@@ -76,8 +76,8 @@ const specificRepoInfo = async function (repoName) {
 
 const displaySpecificRepoInfo = function (repoInfo, languages) {
     backRepoButton.classList.remove("hide");
-    repoData.innerHTML = "";
-    repoData.classList.remove("hide");
+    appearRepoData.innerHTML = "";
+    appearRepoData.classList.remove("hide");
     appearRepo.classList.add("hide");
 
     const div = document.createElement("div");
@@ -89,12 +89,12 @@ const displaySpecificRepoInfo = function (repoInfo, languages) {
     <p>Languages: ${languages.join(", ")}</p>
     <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
     `;
-    repoData.append(div);
+    appearRepoData.append(div);
 };
 
 backRepoButton.addEventListener("click", function () {
     appearRepo.classList.remove("hide");
-    repoData.classList.add("hide");
+    appearRepoData.classList.add("hide");
     backRepoButton.classList.add("hide");
 });
 
@@ -103,10 +103,10 @@ backRepoButton.addEventListener("click", function () {
 filterInput.addEventListener("input", function(e) {
     const search = e.target.value;
     const repos = document.querySelectorAll(".repo");
-    const searchInput = search.toLowercase();
+    const searchInput = search.toLowerCase();
 
     for (const repo of repos) {
-        const repoText = repo.innerText.toLowercase();
+        const repoText = repo.innerText.toLowerCase();
         if (repoText.includes(searchInput)) {
             repo.classList.remove("hide");
         } else {
